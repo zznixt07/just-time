@@ -149,21 +149,22 @@ class JustTime:
 
 if __name__ == '__main__':
 
-    t1 = JustTime(1, 0, 0, 66_000_000)
-    t2 = JustTime(23, 59, 59)
-    print(t1.strftime('%I:%M %p'))
-    print(t2.strftime('%I:%M %p'))
-    print(t1.hour)
-    print(t1.minute)
-    print(t1.second)
-    print(t1.total_seconds())
+    one_hour = JustTime(hour=1, minute=0, second=0, microsecond=66_000_000)
+    one_day = JustTime(23, 59, 59)
+    # print(one_hour.strftime('%I:%M %p'))
+    # print(one_day.strftime('%I:%M %p'))
+    print(one_hour.hour)
+    print(one_hour.minute)
+    print(one_hour.second)
+    print(one_hour.microsecond)
+    print(one_hour.total_seconds())
 
-    # print(t1 + t2)
-    # print(t1 - t2)
-    # print(t2 - t1)
+    # print(one_hour + one_day)
+    # print(one_hour - one_day)
+    # print(one_day - one_hour)
     # d1 = timedelta(hours=3, minutes=5)
-    # print(t1 + d1)
-    # print(t1 - d1)
+    # print(one_hour + d1)
+    # print(one_hour - d1)
     t3 = JustTime(0,0,2,4_000_100)
     t4 = JustTime(0,0,2,1_001_300)
     # print(t3._total_microseconds)
@@ -173,25 +174,3 @@ if __name__ == '__main__':
     print(t4 <= t3)
     # print(t3.total_seconds())
     # print(t3.hour)
-    # print(t1.sec_to_HH_MM_SS(86399))
-    mine_st = JustTime(9, 0)
-    mine_end = JustTime(11, 0)
-
-    # other_st = JustTime(8, 30)
-    other_st = JustTime(9, 30)
-    # other_end = JustTime(10, 30)
-    other_end = JustTime(11, 30)
-
-    # other_st = JustTime(8, 0)
-    # other_end = JustTime(8, 40)
-
-    gaps = []
-    # st_diff = (other_st - mine_st).total_seconds()
-    # end_diff = (mine_end - other_end).total_seconds()
-    # if st_diff > 0:
-    #     gaps.append((mine_st, other_st))
-    # if end_diff > 0:
-    #     gaps.append((other_end, mine_end))
-    # st_diff = other_st.total_microseconds() - mine_st.total_microseconds()
-    # end_diff = mine_end.total_microseconds() - other_end.total_microseconds()
-
