@@ -7,7 +7,8 @@ class JustTime:
 
     def __init__(self,
         hour: int = 0, minute: int = 0, second: int = 0, microsecond: int = 0,
-        tzinfo: tzinfo = timezone.utc):
+        # tzinfo: tzinfo = timezone.utc
+        ):
         '''JustTime allows representing time greater than 24hrs.
         If time is greater than 24hrs then only the hour will increase past its
         normal limit of <= 23. Minute, second, and microsecond remain under their
