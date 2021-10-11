@@ -6,7 +6,7 @@ The `JustTime` class allows representing time greater than 24hrs without going i
 
     pip install git+https://git@github.com/zznixt07/just-time.git
 
-#### Using SSH
+##### Using SSH
 
     pip install git+ssh://git@github.com:zznixt07/just-time.git
 

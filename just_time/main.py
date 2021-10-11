@@ -4,11 +4,14 @@ from datetime import time, timedelta
 
 
 class JustTime:
-
-    def __init__(self,
-        hour: int = 0, minute: int = 0, second: int = 0, microsecond: int = 0,
+    def __init__(
+        self,
+        hour: int = 0,
+        minute: int = 0,
+        second: int = 0,
+        microsecond: int = 0,
         # tzinfo: tzinfo = timezone.utc
-        ):
+    ):
         '''JustTime allows representing time greater than 24hrs.
         If time is greater than 24hrs then only the hour will increase past its
         normal limit of <= 23. Minute, second, and microsecond remain under their
@@ -19,7 +22,9 @@ class JustTime:
         :param:seconds
         '''
 
-        self._total_microseconds: int = (hour * 3600 + minute * 60 + second) * (10 ** 6) + microsecond
+        self._total_microseconds: int = (hour * 3600 + minute * 60 + second) * (
+            10 ** 6
+        ) + microsecond
         self._total_seconds: int = self._total_microseconds * (10 ** -6)
         rem = self._total_microseconds % (3600 * 10 ** 6)
         hh = self._total_microseconds // (3600 * 10 ** 6)
@@ -39,34 +44,36 @@ class JustTime:
     def minute(self) -> int:
         "[-inf, +59]"
         return self._minute
-    
+
     @property
     def second(self) -> int:
         "[-inf, +59]"
         return self._second
-    
+
     @property
     def microsecond(self):
         "[-inf, +1_000_000]"
         return self._microsecond
-    
+
     def __str__(self) -> str:
         return f'{self.hour:02}:{self.minute:02}:{self.second:02}:{self.microsecond:06}'
 
     def __repr__(self) -> str:
-        return f'JustTime({self.hour}, {self.minute}, {self.second}, {self.microsecond})'
+        return (
+            f'JustTime({self.hour}, {self.minute}, {self.second}, {self.microsecond})'
+        )
 
-    def __lt__(self, other: Union[time, JustTime]) -> bool:
+    def __lt__(self, other: Union[time, timedelta, JustTime]) -> bool:
         if isinstance(other, (JustTime, time)):
             other = JustTime(other.hour, other.minute, other.second, other.microsecond)
         return self.total_seconds() < other.total_seconds()
 
-    def __gt__(self, other: Union[time, JustTime]) -> bool:
+    def __gt__(self, other: Union[time, timedelta, JustTime]) -> bool:
         if isinstance(other, (JustTime, time)):
             other = JustTime(other.hour, other.minute, other.second, other.microsecond)
         return self.total_seconds() > other.total_seconds()
 
-    def __eq__(self, other: Union[time, JustTime]) -> bool:
+    def __eq__(self, other: Union[time, timedelta, JustTime]) -> bool:
         if isinstance(other, (JustTime, time)):
             other = JustTime(other.hour, other.minute, other.second, other.microsecond)
         return self.total_seconds() == other.total_seconds()
@@ -75,8 +82,8 @@ class JustTime:
         return self.__lt__(other) or self.__eq__(other)
 
     def __ge__(self, other: Union[time, JustTime]) -> bool:
-        return self.__gt__(other) or self.__eq__(other)      
-               
+        return self.__gt__(other) or self.__eq__(other)
+
     def __add__(self, other: Union[time, timedelta, JustTime]) -> JustTime:
         "TODO support tzinfo"
 
@@ -89,32 +96,63 @@ class JustTime:
             return NotImplemented
 
         return JustTime(
-            hour=self.hour+other_obj.hour,
-            minute=self.minute+other_obj.minute,
-            second=self.second+other_obj.second,
-            microsecond=self.microsecond+other_obj.microsecond,
+            hour=self.hour + other_obj.hour,
+            minute=self.minute + other_obj.minute,
+            second=self.second + other_obj.second,
+            microsecond=self.microsecond + other_obj.microsecond,
         )
 
-    def __sub__(self, other: Union[time, timedelta, JustTime]) -> Union[timedelta, JustTime]:
+    def __sub__(
+        self, other: Union[time, timedelta, JustTime]
+    ) -> Union[timedelta, JustTime]:
         "TODO support tzinfo"
 
         other_obj: Union[time, JustTime]
         if isinstance(other, (time, JustTime)):
             # return timedelta(seconds=self.total_seconds()-int(other.total_seconds()))
             return timedelta(
-                hours=self.hour-other.hour,
-                minutes=self.minute-other.minute,
-                seconds=self.second-other.second,
-                microseconds=self.microsecond-other.microsecond,
+                hours=self.hour - other.hour,
+                minutes=self.minute - other.minute,
+                seconds=self.second - other.second,
+                microseconds=self.microsecond - other.microsecond,
             )
         elif isinstance(other, timedelta):
             # return JustTime(second=self.total_seconds()-int(other.total_seconds()))
             other_obj = JustTime(second=int(other.total_seconds()))
             return JustTime(
-                hour=self.hour-other_obj.hour,
-                minute=self.minute-other_obj.minute,
-                second=self.second-other_obj.second,
-                microsecond=self.microsecond-other_obj.microsecond,
+                hour=self.hour - other_obj.hour,
+                minute=self.minute - other_obj.minute,
+                second=self.second - other_obj.second,
+                microsecond=self.microsecond - other_obj.microsecond,
+            )
+        else:
+            return NotImplemented
+
+    __radd__ = __add__
+    # addition is commutative but substraction is not
+
+    def __rsub__(
+        self, other: Union[time, timedelta, JustTime]
+    ) -> Union[timedelta, JustTime]:
+        "TODO support tzinfo"
+
+        other_obj: Union[time, JustTime]
+        if isinstance(other, (time, JustTime)):
+            # return timedelta(seconds=self.total_seconds()-int(other.total_seconds()))
+            return timedelta(
+                hours=other.hour - self.hour,
+                minutes=other.minute - self.minute,
+                seconds=other.second - self.second,
+                microseconds=other.microsecond - self.microsecond,
+            )
+        elif isinstance(other, timedelta):
+            # return JustTime(second=self.total_seconds()-int(other.total_seconds()))
+            other_obj = JustTime(second=int(other.total_seconds()))
+            return JustTime(
+                hour=other_obj.hour - self.hour,
+                minute=other_obj.minute - self.minute,
+                second=other_obj.second - self.second,
+                microsecond=other_obj.microsecond - self.microsecond,
             )
         else:
             return NotImplemented
@@ -126,13 +164,13 @@ class JustTime:
             'p': 'AM' if self.hour < 12 else 'PM',
             'M': f'{self.minute:02}',
             'S': f'{self.second:02}',
-            'f': f'{self.microsecond:06}'
+            'f': f'{self.microsecond:06}',
         }
         # translation: Dict[int, int] = str.maketrans(frmt_info)
         for character in frmt_info:
             # str_f = str_f.replace('%' + character, translation[ord(character)])
             str_f = str_f.replace('%' + character, frmt_info[character])
-        
+
         return str_f
 
     def total_seconds(self) -> float:
@@ -143,9 +181,9 @@ class JustTime:
 
     def lies_between(self, starting: JustTime, ending: JustTime) -> bool:
         return bool(
-            self.total_microseconds() in range(
-                starting.total_microseconds(), ending.total_microseconds()
-        ))
+            self.total_microseconds()
+            in range(starting.total_microseconds(), ending.total_microseconds())
+        )
 
 
 if __name__ == '__main__':
@@ -175,4 +213,3 @@ if __name__ == '__main__':
     print(t4 <= t3)
     # print(t3.total_seconds())
     # print(t3.hour)
-    
