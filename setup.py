@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='just_time',
-      version='1.0',
+      version='1.0.0-dev',
       description='',
       url='http://github.com/zznixt07',
       author='zznixt07',
