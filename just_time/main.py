@@ -211,5 +211,5 @@ if __name__ == '__main__':
     print(t3 - t4)
     print(t4 - t3)
     print(t4 <= t3)
-    # print(t3.total_seconds())
+    print(t3.total_seconds())
     # print(t3.hour)
